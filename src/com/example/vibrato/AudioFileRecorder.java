@@ -7,11 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
-import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
-import be.tarsos.dsp.io.android.AndroidAudioInputStream;
-
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -19,11 +14,12 @@ import android.os.Environment;
 import android.os.Handler;
 
 public class AudioFileRecorder {
+	public static final double WINDOW_SIZE = 0.01;
 	private static final int RECORDER_BPP = 16;
-	private static final String AUDIO_RECORDER_FILE_EXT_WAV = ".wav";
+	private static final String AUDIO_RECORDER_FILE_EXT_WAV = "audio.wav";
 	private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
 	private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
-	public static final int RECORDER_SAMPLERATE = 22050;
+	public static final int RECORDER_SAMPLERATE = 22050*2;
 	private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
 	private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 
@@ -33,7 +29,7 @@ public class AudioFileRecorder {
 	private static Handler handler = new Handler();
 	private static String fileName;
 
-	private static String getFilename() {
+	private static String getFilename(boolean read) {
 		String filepath = Environment.getExternalStorageDirectory().getPath();
 		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
 		
@@ -41,7 +37,25 @@ public class AudioFileRecorder {
 			file.mkdirs();
 		}
 		if (fileName == null){
-			fileName = (file.getAbsolutePath() + "/" + System.currentTimeMillis() + AUDIO_RECORDER_FILE_EXT_WAV);
+			fileName = (file.getAbsolutePath() + "/" + AUDIO_RECORDER_FILE_EXT_WAV);
+		}
+		File file2 = new File(file.getAbsolutePath(), AUDIO_RECORDER_FILE_EXT_WAV);
+		if (file2.exists() && !read)
+		{
+			file2.delete();
+		}
+		return fileName;
+	}
+	
+	private static String getTestFileName()	{
+		String filepath = Environment.getExternalStorageDirectory().getPath();
+		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
+		
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		if (fileName == null){
+			fileName = (file.getAbsolutePath() + "/tone03" + AUDIO_RECORDER_FILE_EXT_WAV);
 		}
 		return fileName;
 	}
@@ -75,10 +89,20 @@ public class AudioFileRecorder {
 		recordingThread.start();
 	}
 
+	public static InputStream getTestAudio()
+	{
+		try {
+			return new FileInputStream(getTestFileName());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static InputStream getAudioRecorded()
 	{
 		try {
-			return new FileInputStream(getFilename());
+			return new FileInputStream(getFilename(true));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,7 +153,7 @@ public class AudioFileRecorder {
 			try {
 				synchronized(handler){
 					handler.wait();
-					copyWaveFile(getTempFilename(), getFilename());
+					copyWaveFile(getTempFilename(), getFilename(false));
 					recorder.release();
 					recorder = null;
 					recordingThread = null;
@@ -237,4 +261,8 @@ public class AudioFileRecorder {
 		out.write(header, 0, 44);
 	}
 
+	public static double getBufferSize()
+	{
+		return RECORDER_SAMPLERATE*2*WINDOW_SIZE;
+	}
 }
