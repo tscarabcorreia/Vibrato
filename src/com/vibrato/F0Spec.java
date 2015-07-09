@@ -1,4 +1,4 @@
-package com.example.vibrato;
+package com.vibrato;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,17 +187,66 @@ public class F0Spec {
 	public static ArrayList<Entry> RemoveDC(ArrayList<Entry> array)
 	{
 		ArrayList<Entry> arrayFiltered = new ArrayList<Entry>(array.size());
-		for (Entry e : array)
+		for (int i = 6; i < array.size(); i++)
 		{
-			arrayFiltered.add(new Entry(e.getVal(), e.getXIndex()));
+			arrayFiltered.add(new Entry(0, array.get(i).getXIndex()));
 		}
-		
-		float media = mediaAritmetica(getArrayFromEntries(arrayFiltered));
-		for (int i = 0; i < arrayFiltered.size(); i++)
+		float[] filtered = FiltroMedia(getArrayFromEntries(array));
+		for (int i = 6; i < array.size(); i++)
 		{
-			arrayFiltered.get(i).setVal(arrayFiltered.get(i).getVal() - media);
+			arrayFiltered.get(i-6).setVal(filtered[i]);
 		}
 		return arrayFiltered;
+	}
+	
+	private static float[] FiltroMedia(float[] input)
+	{
+		float[] output = new float[input.length];
+		float media = mediaAritmetica(input);
+		for (int n = 6; n < input.length; n++)
+		{
+			output[n] = input[n] - media;
+		}
+		return output;
+	}
+	
+	private static float[] IIRFilter(float[] input)
+	{
+		float[] output = new float[input.length];
+		
+		for (int n = 6; n < input.length; n++)
+		{
+			output[n] = (float) 
+					(
+							(  1 * input[n- 6])
+							+ ( -6 * input[n- 5])
+							+ ( 15 * input[n- 4])
+							+ (-20 * input[n- 3])
+							+ ( 15 * input[n- 2])
+							+ ( -6 * input[n- 1])
+							+ (  1 * input[n- 0])
+				     		+ ( -0.0218315740 * output[n- 6])
+				     		+ (  0.2098654504 * output[n- 5])
+ 							+ ( -0.8779238976 * output[n- 4])
+     						+ (  2.0551314368 * output[n- 3])
+ 							+ ( -2.9104065679 * output[n- 2])
+     						+ (  2.3797210446 * output[n- 1])
+						);
+		}
+		return output;
+	}
+	
+	public static float[] GetPercentualExtent(ArrayList<Entry> original)
+	{
+		ArrayList<Entry> filtered = RemoveDC(original);
+		float[] dft = DFT(filtered);
+		float[] percentual = new float[dft.length];
+		float media = mediaAritmetica(getArrayFromEntries(original));
+		for (int i = 0; i < dft.length; i++)
+		{
+			percentual[i] = 100 * dft[i]/media;
+		}
+		return percentual;
 	}
 	
 	public static float[] DFT(ArrayList<Entry> filtered)
@@ -224,7 +273,7 @@ public class F0Spec {
 				yre[k] += array[n] * Math.cos(k * dw * n);
 				yim[k] -= array[n] * Math.sin(k * dw * n);
 			}
-			yMag[k] = (float) Math.sqrt(Math.pow(yre[k], 2) + Math.pow(yim[k], 2));
+			yMag[k] = (float) (2 * Math.sqrt(Math.pow(yre[k], 2) + Math.pow(yim[k], 2))) / array.length;
 		}
 		return yMag;
 	}

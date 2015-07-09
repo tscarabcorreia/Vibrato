@@ -1,9 +1,10 @@
-package com.example.vibrato;
+package com.vibrato;
 
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import com.vibrato.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -157,7 +158,7 @@ public class MainActivity extends Activity {
 					public void run() {
 						float pitch = pitchDetectionResult.getPitch();
 						entries.add(new Entry(pitch, lastX++));
-						xVals.add(new DecimalFormat("#.##").format(lastX * AudioFileRecorder.WINDOW_SIZE));
+						xVals.add(new DecimalFormat("#.## s").format(lastX * AudioFileRecorder.WINDOW_SIZE));
 						progressDialog.incrementProgressBy((int) (AudioFileRecorder.WINDOW_SIZE*1000));
 					}
 				});
@@ -170,6 +171,7 @@ public class MainActivity extends Activity {
 				entries = F0Spec.PostProcessing(entries);
 				ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
 				LineDataSet pitchDataSet = new LineDataSet(entries, "Pitch");
+				pitchDataSet.setLabel("F0 (Hz)");
 				pitchDataSet.setColor(Color.BLUE);
 				pitchDataSet.setCircleColor(Color.BLUE);
 				pitchDataSet.setLineWidth(1f);
@@ -224,18 +226,19 @@ public class MainActivity extends Activity {
 				});
 		        if (validWindowFiltered != null)
 		        {
-		        	float[] dft = F0Spec.DFT(validWindowFiltered);
+		        	float[] dft = F0Spec.GetPercentualExtent(validWindow);
 			        int i = 0;
 			    	ArrayList<Entry> dftentries = new ArrayList<Entry>();
 			    	ArrayList<String> dftXVals = new ArrayList<String>();
 			        for (float n : dft)
 			        {
 						dftentries.add(new Entry(n, i));
-						dftXVals.add(new DecimalFormat("#.#").format(i * 0.1));
+						dftXVals.add(new DecimalFormat("#.# Hz").format(i * 0.1));
 						i++;
 			        }
 					ArrayList<LineDataSet> dftDataSets = new ArrayList<LineDataSet>();
-					LineDataSet dftDataSet = new LineDataSet(dftentries, "DFT");
+					LineDataSet dftDataSet = new LineDataSet(dftentries, "Extent");
+					dftDataSet.setLabel("Percentual Extent (%Hz)");
 					dftDataSet.setColor(Color.BLUE);
 					dftDataSet.setCircleColor(Color.BLUE);
 					dftDataSet.setLineWidth(1f);

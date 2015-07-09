@@ -1,4 +1,4 @@
-package com.example.vibrato;
+package com.vibrato;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +19,7 @@ public class AudioFileRecorder {
 	private static final String AUDIO_RECORDER_FILE_EXT_WAV = "audio.wav";
 	private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
 	private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
-	public static final int RECORDER_SAMPLERATE = 22050*2;
+	public static final int RECORDER_SAMPLERATE = 22050;
 	private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
 	private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 
