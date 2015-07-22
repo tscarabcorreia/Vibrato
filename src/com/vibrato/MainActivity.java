@@ -10,6 +10,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
@@ -19,12 +20,13 @@ import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MotionEvent;
@@ -88,7 +90,9 @@ public class MainActivity extends Activity {
 		public boolean onTouch(View v, MotionEvent event) {
 	        switch (event.getAction()) {
 	        case MotionEvent.ACTION_DOWN:
-	        	Animation animScale = AnimationUtils.loadAnimation(v.getContext(), R.anim.button_scale_animation);
+	        	TransitionDrawable transition = (TransitionDrawable) v.getBackground();
+	        	transition.startTransition(700);
+        		Animation animScale = AnimationUtils.loadAnimation(v.getContext(), R.anim.button_scale_animation);
 	        	v.startAnimation(animScale);
 				timeElapsed = 0;
 				clock.setBase(SystemClock.elapsedRealtime());
@@ -96,7 +100,11 @@ public class MainActivity extends Activity {
 				AudioFileRecorder.startRecording();
 	            break;
 	        case MotionEvent.ACTION_UP:
-				AudioFileRecorder.stopRecording();
+	        	Animation animScaleBack = AnimationUtils.loadAnimation(v.getContext(), R.anim.button_scale_animation_reverse);
+	        	v.startAnimation(animScaleBack);
+	        	TransitionDrawable transitionback = (TransitionDrawable) v.getBackground();
+	        	transitionback.reverseTransition(300);
+	        	AudioFileRecorder.stopRecording();
 				timeElapsed = SystemClock.elapsedRealtime() - clock.getBase();
 				clock.stop();
 				if (timeElapsed < 2*1000){

@@ -8,46 +8,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnStart"
-        android:layout_alignBottom="@+id/btnStart"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/round_button"
-        android:text="Stop" />
-
-    <Button
-        android:id="@+id/btnTeste"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnStart"
-        android:layout_alignBottom="@+id/btnStart"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/round_button"
-        android:text="Teste"
-        android:visibility="invisible" />
-
-    <ImageButton
-        android:id="@+id/btnStart"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/round_button"
-        android:src="@drawable/mic"
-        android:scaleType="fitCenter"
-        android:padding="10dp"
-        android:layout_marginTop="36dp"
-         />
-
     <Chronometer
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnStart"
         android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         android:text="Chronometer" />
 
     <ScrollView
@@ -80,5 +47,18 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <ImageButton
+        android:id="@+id/btnStart"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/round_button"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mic" />
 
 </RelativeLayout>

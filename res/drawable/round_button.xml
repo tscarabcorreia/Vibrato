@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-	<solid android:color="#ededed"/>
-	<stroke android:width="2dp" android:color="#fff" />
-</shape>
+<?xml version="1.0" encoding="UTF-8"?>
+<transition xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The drawables used here can be solid colors, gradients, shapes, images, etc. -->
+    <item android:drawable="@drawable/round_button_unselected" />
+    <item android:drawable="@drawable/round_button_selected" />
+</transition>
