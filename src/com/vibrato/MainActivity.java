@@ -27,9 +27,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class MainActivity extends Activity {
@@ -50,7 +54,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setButtonHandlers();
-		enableButtons(false);
 		initializeGraph();
 		clock = (Chronometer) findViewById(R.id.chronometer);
 		progressDialog = new ProgressDialog(this);
@@ -76,51 +79,39 @@ public class MainActivity extends Activity {
 	}
 
 	private void setButtonHandlers() {
-		((Button) findViewById(R.id.btnStart)).setOnClickListener(btnClick);
-		((Button) findViewById(R.id.btnStop)).setOnClickListener(btnClick);
-		((Button) findViewById(R.id.btnTeste)).setOnClickListener(btnClick);
+		((ImageButton) findViewById(R.id.btnStart)).setOnTouchListener(btnClick);
 	}
 
-	private void enableButton(int id, boolean isEnable) {
-		((Button) findViewById(id)).setEnabled(isEnable);
-	}
+	private View.OnTouchListener btnClick = new View.OnTouchListener() {
 
-	private void enableButtons(boolean isRecording) {
-		enableButton(R.id.btnStart, !isRecording);
-		enableButton(R.id.btnStop, isRecording);
-	}
-
-	private View.OnClickListener btnClick = new View.OnClickListener() {
 		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-				case R.id.btnStart: {
-					timeElapsed = 0;
-					clock.setBase(SystemClock.elapsedRealtime());
-					clock.start();
-					enableButtons(true);
-					AudioFileRecorder.startRecording();
-					break;
+		public boolean onTouch(View v, MotionEvent event) {
+	        switch (event.getAction()) {
+	        case MotionEvent.ACTION_DOWN:
+	        	Animation animScale = AnimationUtils.loadAnimation(v.getContext(), R.anim.button_scale_animation);
+	        	v.startAnimation(animScale);
+				timeElapsed = 0;
+				clock.setBase(SystemClock.elapsedRealtime());
+				clock.start();
+				AudioFileRecorder.startRecording();
+	            break;
+	        case MotionEvent.ACTION_UP:
+				AudioFileRecorder.stopRecording();
+				timeElapsed = SystemClock.elapsedRealtime() - clock.getBase();
+				clock.stop();
+				if (timeElapsed < 2*1000){
+					showAlert(v.getContext(), "Short audio recorded.", "Please record at least 2 seconds.");
 				}
-				case R.id.btnStop: {
-					enableButtons(false);
-					AudioFileRecorder.stopRecording();
-					timeElapsed = SystemClock.elapsedRealtime() - clock.getBase();
-					clock.stop();
-					if (timeElapsed < 2*1000){
-						showAlert(v.getContext(), "Short audio recorded.", "Please record at least 2 seconds.");
-					}
-					else{
-						processAudio(AudioFileRecorder.getAudioRecorded());
-					}
-					break;
+				else{
+					processAudio(AudioFileRecorder.getAudioRecorded());
 				}
-				case R.id.btnTeste: {
-					processAudio(AudioFileRecorder.getTestAudio());
-					break;
-				}
-			}
-		}
+	            break;
+	        case MotionEvent.ACTION_MOVE:
+	 
+	            break;
+	        }
+	        return true;
+	    }
 	};
 
 

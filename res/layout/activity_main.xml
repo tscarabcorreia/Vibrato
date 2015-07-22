@@ -15,6 +15,7 @@
         android:layout_alignBaseline="@+id/btnStart"
         android:layout_alignBottom="@+id/btnStart"
         android:layout_alignParentRight="true"
+        android:background="@drawable/round_button"
         android:text="Stop" />
 
     <Button
@@ -24,17 +25,22 @@
         android:layout_alignBaseline="@+id/btnStart"
         android:layout_alignBottom="@+id/btnStart"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/round_button"
         android:text="Teste"
         android:visibility="invisible" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/round_button"
+        android:src="@drawable/mic"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
         android:layout_marginTop="36dp"
-        android:text="Start" />
+         />
 
     <Chronometer
         android:id="@+id/chronometer"
