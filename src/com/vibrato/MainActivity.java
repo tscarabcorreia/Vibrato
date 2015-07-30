@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
 				timeElapsed = SystemClock.elapsedRealtime() - clock.getBase();
 				clock.stop();
 				if (timeElapsed < 2*1000){
-					showAlert(v.getContext(), "Short audio recorded.", "Please record at least 2 seconds.");
+					showAlert(v.getContext(), getString(R.string.short_audio_recorded), getString(R.string.short_audio_recorded_instruction));
 				}
 				else{
 					processAudio(AudioFileRecorder.getAudioRecorded());
@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
 				builder.setTitle(title)
 						.setMessage(message)
 						.setCancelable(false)
-						.setPositiveButton("OK", null);
+						.setPositiveButton(R.string.ok, null);
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
@@ -143,7 +143,7 @@ public class MainActivity extends Activity {
 		progressDialog.setIndeterminate(false);
 		progressDialog.setMax((int) (timeElapsed*1.2));
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		progressDialog.setMessage("Wait while the audio recorded is being evaluated.");
+		progressDialog.setMessage(c.getString(R.string.processing_message));
 		progressDialog.show();
 		progressDialog.setProgress((int) (timeElapsed*0.1));
 		entries.clear();
@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
 				progressDialog.incrementProgressBy((int) (timeElapsed*0.1));
 				entries = F0Spec.PostProcessing(entries);
 				ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-				LineDataSet pitchDataSet = new LineDataSet(entries, "Pitch");
+				LineDataSet pitchDataSet = new LineDataSet(entries, getString(R.string.pitch_dataset_name));
 				pitchDataSet.setLabel("F0 (Hz)");
 				pitchDataSet.setColor(Color.BLUE);
 				pitchDataSet.setCircleColor(Color.BLUE);
@@ -184,10 +184,10 @@ public class MainActivity extends Activity {
 				ArrayList<Entry> validWindow = F0Spec.getValidWindow(entries, 100);
 				ArrayList<Entry> validWindowFiltered = null;
 				if (validWindow == null){
-					showAlert(c, "Poor audio quality", "Sorry, we were not able to process the minimum of 1 second of the audio. Please record again.");
+					showAlert(c, getString(R.string.poor_audio_quality), getString(R.string.poor_audio_quality_instruction));
 				}
 				else{
-			        LineDataSet slicedDataSet = new LineDataSet(validWindow, "Valid");
+			        LineDataSet slicedDataSet = new LineDataSet(validWindow, getString(R.string.valid_dataset_name));
 			        slicedDataSet.setColor(Color.RED);
 			        slicedDataSet.setCircleColor(Color.RED);
 			        slicedDataSet.setLineWidth(1f);
@@ -199,7 +199,7 @@ public class MainActivity extends Activity {
 			        dataSets.add(slicedDataSet);
 			        
 			        validWindowFiltered = F0Spec.RemoveDC(validWindow);
-			        LineDataSet filteredDataSet = new LineDataSet(validWindowFiltered, "Filtered");
+			        LineDataSet filteredDataSet = new LineDataSet(validWindowFiltered, getString(R.string.filtered_dataset_name));
 			        filteredDataSet.setColor(Color.GREEN);
 			        filteredDataSet.setCircleColor(Color.GREEN);
 			        filteredDataSet.setLineWidth(1f);

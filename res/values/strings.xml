@@ -4,5 +4,14 @@
     <string name="app_name">Vibrato</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="short_audio_recorded">Short audio recorded.</string>
+    <string name="short_audio_recorded_instruction">Please record at least 2 seconds.</string>
+    <string name="ok">OK</string>
+    <string name="processing_message">Wait while the audio recorded is being evaluated.</string>
+    <string name="poor_audio_quality">Poor audio quality</string>
+    <string name="poor_audio_quality_instruction">Sorry, we were not able to process the minimum of 1 second of the audio. Please record again.</string>
+    <string name="valid_dataset_name">Valid</string>
+    <string name="filtered_dataset_name">Filtered</string>
+    <string name="pitch_dataset_name">Pitch</string>
 
 </resources>
